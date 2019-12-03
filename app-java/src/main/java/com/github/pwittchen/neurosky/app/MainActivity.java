@@ -1,5 +1,6 @@
 package com.github.pwittchen.neurosky.app;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
@@ -24,9 +25,18 @@ public class MainActivity extends AppCompatActivity {
   private NeuroSky neuroSky;
 
   @BindView(R.id.tv_state) TextView tvState;
+  @BindView(R.id.tv_poorsignal) TextView tvPoorsignal;
   @BindView(R.id.tv_attention) TextView tvAttention;
   @BindView(R.id.tv_meditation) TextView tvMeditation;
   @BindView(R.id.tv_blink) TextView tvBlink;
+  @BindView(R.id.tv_alphalow) TextView tvAlphalow;
+  @BindView(R.id.tv_alphahigh) TextView tvAlphahigh;
+  @BindView(R.id.tv_betalow) TextView tvBetalow;
+  @BindView(R.id.tv_betahigh) TextView tvBetahigh;
+  @BindView(R.id.tv_gammalow) TextView tvGammalow;
+  @BindView(R.id.tv_gammamid) TextView tvGammamid;
+  @BindView(R.id.tv_delta) TextView tvDelta;
+  @BindView(R.id.tv_theta) TextView tvTheta;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -77,8 +87,18 @@ public class MainActivity extends AppCompatActivity {
 
   private void handleSignalChange(final Signal signal) {
     switch (signal) {
-      case ATTENTION:
+      case POOR_SIGNAL:
+        tvPoorsignal.setText(getFormattedMessage("Poorsignal: %d", signal));
+        int psignal=signal.getValue();
+        if(psignal>0)
+        {
+          final MediaPlayer mp = MediaPlayer.create(this,R.raw.beep);
+          mp.start();
+        }
+        break;
+      case LOW_BATTERY:
         tvAttention.setText(getFormattedMessage("attention: %d", signal));
+
         break;
       case MEDITATION:
         tvMeditation.setText(getFormattedMessage("meditation: %d", signal));
@@ -88,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         break;
     }
 
-    Log.d(LOG_TAG, String.format("%s: %d", signal.toString(), signal.getValue()));
+    //   Log.d(LOG_TAG, String.format("%s: %d", signal.toString(), signal.getValue()));
   }
 
   private String getFormattedMessage(String messageFormat, Signal signal) {
@@ -97,7 +117,34 @@ public class MainActivity extends AppCompatActivity {
 
   private void handleBrainWavesChange(final Set<BrainWave> brainWaves) {
     for (BrainWave brainWave : brainWaves) {
-      Log.d(LOG_TAG, String.format("%s: %d", brainWave.toString(), brainWave.getValue()));
+      switch (brainWave) {
+        case LOW_ALPHA:
+          // int alph = brainWave.getValue()t;
+          tvAlphalow.setText(String.format("Low Alpha:%d", brainWave.getValue()));
+          break;
+        case HIGH_ALPHA:
+          tvAlphahigh.setText(String.format("High Alpha:%d", brainWave.getValue()));
+          break;
+        case LOW_BETA:
+          tvBetalow.setText(String.format("Low Beta:%d", brainWave.getValue()));
+          break;
+        case HIGH_BETA:
+          tvBetahigh.setText(String.format("High Beta:%d", brainWave.getValue()));
+          break;
+        case LOW_GAMMA:
+          tvGammalow.setText(String.format("Low Gamma:%d", brainWave.getValue()));
+          break;
+        case MID_GAMMA:
+          tvGammamid.setText(String.format("Mid Gamma:%d", brainWave.getValue()));
+          break;
+        case DELTA:
+          tvDelta.setText(String.format("Delta:%d", brainWave.getValue()));
+          break;
+        case THETA:
+          tvTheta.setText(String.format("Theta:%d", brainWave.getValue()));
+          break;
+      }
+//     Log.d(LOG_TAG, String.format("%s: %d", brainWave.toString(), brainWave.getValue()));
     }
   }
 

@@ -4,9 +4,18 @@
   <string name="disconnect">disconnect</string>
   <string name="stop_monitoring">stop monitoring</string>
   <string name="start_monitoring">start monitoring</string>
-  <string name="waiting_for_raw_signal">waiting for raw signal...</string>
-  <string name="waiting_for_blink_signal">waiting for blink signal...</string>
-  <string name="waiting_for_meditation_signal">waiting for meditation signal...</string>
-  <string name="waiting_for_attention_signal">waiting for attention signal...</string>
+  <string name="waiting_for_raw_signal">Raw signal...</string>
+  <string name="waiting_for_blink_signal">Blink signal...</string>
+  <string name="waiting_for_meditation_signal">Meditation signal...</string>
+  <string name="waiting_for_attention_signal">Attention signal...</string>
+  <string name="Poor_signal">waiting for connect...</string>
+  <string name="alphalow_value">Alpha Low</string>
+  <string name="alphahigh_value">Alpha High</string>
+  <string name="betalow_value">Beta Low</string>
+  <string name="betahigh_value">Beta High</string>
+  <string name="gammalow_value">Gamma Low</string>
+  <string name="gammamid_value">Gamma Mid</string>
+  <string name="delta_value">Delta</string>
+  <string name="theta_value">Theta</string>
   <string name="waiting_for_state">waiting for state...</string>
 </resources>
