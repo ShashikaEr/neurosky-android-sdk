@@ -140,6 +140,7 @@
           android:text="@string/disconnect"
           />
 
+
     </LinearLayout>
   </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
