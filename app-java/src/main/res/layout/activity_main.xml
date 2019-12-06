@@ -140,6 +140,12 @@
           android:text="@string/disconnect"
           />
 
+      <CheckBox
+          android:id="@+id/mutesound"
+          android:layout_width="120dp"
+          android:layout_height="wrap_content"
+          android:text="Mute Sound" />
+
 
     </LinearLayout>
   </ScrollView>

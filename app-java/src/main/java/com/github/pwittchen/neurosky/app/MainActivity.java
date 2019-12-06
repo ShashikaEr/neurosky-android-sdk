@@ -6,6 +6,8 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -45,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
   @BindView(R.id.tv_gammamid) TextView tvGammamid;
   @BindView(R.id.tv_delta) TextView tvDelta;
   @BindView(R.id.tv_theta) TextView tvTheta;
-
+  @BindView(R.id.btn_start_monitoring) TextView tvmonit;
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -100,24 +102,29 @@ public class MainActivity extends AppCompatActivity {
       case POOR_SIGNAL:
         tvPoorsignal.setText(getFormattedMessage("Poorsignal: %d", signal));
         int psignal=signal.getValue();
-       data.append("\n"+String.valueOf(signal.getValue()));
-          data.append("Poor");
-        if(psignal>0)
-        {
-          final MediaPlayer mp = MediaPlayer.create(this,R.raw.beep);
-          mp.start();
-        }
+       //data.append("\n"+String.valueOf(signal.getValue()));
+          data.append("\n"+"pp");
+       if(psignal>0) {
+             final MediaPlayer mp = MediaPlayer.create(this, R.raw.beep);
+        boolean isChecked = ((CheckBox) findViewById(R.id.mutesound)).isChecked();
+             if(!isChecked) {
+                 mp.start();
+             }
+
+         }
         break;
         case ATTENTION:
         tvAttention.setText(getFormattedMessage("attention: %d", signal));
+            data.append(","+"at");
 
         break;
       case MEDITATION:
         tvMeditation.setText(getFormattedMessage("meditation: %d", signal));
+          data.append(","+"Md");
         break;
       case BLINK:
         tvBlink.setText(getFormattedMessage("blink: %d", signal));
-        break;
+          break;
     }
 
     //   Log.d(LOG_TAG, String.format("%s: %d", signal.toString(), signal.getValue()));
@@ -133,45 +140,44 @@ public class MainActivity extends AppCompatActivity {
       for (BrainWave brainWave : brainWaves) {
       switch (brainWave) {
           case DELTA:
-          // int alph = brainWave.getValue()t;
+          // int alph = brainWave.getValue();
           tvDelta.setText(String.format("Delta:%d", brainWave.getValue()));
         data.append(","+String.valueOf(brainWave.getValue()));
-
           break;
+
           case MID_GAMMA:
           tvGammamid.setText(String.format("Mid Gamma:%d", brainWave.getValue()));
           data.append(","+String.valueOf(brainWave.getValue()));
-
             break;
+
           case THETA:
               tvTheta.setText(String.format("Theta:%d", brainWave.getValue()));
             data.append(","+String.valueOf(brainWave.getValue()));
-
               break;
+
           case HIGH_BETA:
               tvBetahigh.setText(String.format("High Beta:%d", brainWave.getValue()));
               data.append(","+String.valueOf(brainWave.getValue()));
-
               break;
+
           case LOW_GAMMA:
               tvGammalow.setText(String.format("Low Gamma:%d", brainWave.getValue()));
               data.append(","+String.valueOf(brainWave.getValue()));
-
               break;
+
           case HIGH_ALPHA:
               tvAlphahigh.setText(String.format("High Alpha:%d", brainWave.getValue()));
               data.append(","+String.valueOf(brainWave.getValue()));
-
               break;
+
           case LOW_ALPHA:
               tvAlphalow.setText(String.format("Low Alpha:%d", brainWave.getValue()));
               data.append(","+String.valueOf(brainWave.getValue()));
-
               break;
+
           case LOW_BETA:
               tvBetalow.setText(String.format("Low Beta:%d", brainWave.getValue()));
               data.append(","+String.valueOf(brainWave.getValue()));
-
               break;
       }
 //     Log.d(LOG_TAG, String.format("%s: %d", brainWave.toString(), brainWave.getValue()));
@@ -180,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
   }
 
   @OnClick(R.id.btn_connect) void connect() {
-      data.append("PoorSignal,Delta,MidGamma,Theta,HighBeta,LowGamma,HighAlpha,LowAlpha,LowBeta");
+      data.append("PoorSignal,Delta,MidGamma,Theta,HighBeta,LowGamma,HighAlpha,LowAlpha,LowBeta,Attention,Meditation");
       //data.append("\n"+"PoorSignal,LowAlpha,HighAlpha,LowBeta,HighBeta,LowGamma,MidGamma,Delta,Theta");
       try {
       neuroSky.connect();
@@ -192,35 +198,36 @@ public class MainActivity extends AppCompatActivity {
 
   @OnClick(R.id.btn_disconnect) void disconnect() {
     neuroSky.disconnect();
-    try{
-      //saving
-FileOutputStream out = openFileOutput("data.csv", Context.MODE_PRIVATE);
-out.write((data.toString()).getBytes());
-out.close();
-//export
-      Context context = getApplicationContext();
-      File filelocation = new File(getFilesDir(),"data.csv");
-      Uri path = FileProvider.getUriForFile(context, "com.github.pwittchen.neurosky.app.fileprovider", filelocation);
-      Intent fileIntent = new Intent(Intent.ACTION_SEND);
-      fileIntent.setType("text/csv");
-      fileIntent.putExtra(Intent.EXTRA_SUBJECT, "Data");
-      fileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-      fileIntent.putExtra(Intent.EXTRA_STREAM, path);
-      startActivity(Intent.createChooser(fileIntent, "Send mail"));
-    }
-    catch (Exception e) {
-    e.printStackTrace();
-    }
+
     }
 
 
   @OnClick(R.id.btn_start_monitoring) void startMonitoring() {
-
-      neuroSky.start();
-
+      tvmonit.setText(String.format("Recording..."));
+          neuroSky.start();
   }
 
   @OnClick(R.id.btn_stop_monitoring) void stopMonitoring() {
-    neuroSky.stop();
+      tvmonit.setText(String.format("START MONITORING/RECORD"));
+      neuroSky.stop();
+      try{
+          //saving
+          FileOutputStream out = openFileOutput("data.csv", Context.MODE_PRIVATE);
+          out.write((data.toString()).getBytes());
+          out.close();
+//export
+          Context context = getApplicationContext();
+          File filelocation = new File(getFilesDir(),"data.csv");
+          Uri path = FileProvider.getUriForFile(context, "com.github.pwittchen.neurosky.app.fileprovider", filelocation);
+          Intent fileIntent = new Intent(Intent.ACTION_SEND);
+          fileIntent.setType("text/csv");
+          fileIntent.putExtra(Intent.EXTRA_SUBJECT, "Data");
+          fileIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+          fileIntent.putExtra(Intent.EXTRA_STREAM, path);
+          startActivity(Intent.createChooser(fileIntent, "Send mail"));
+      }
+      catch (Exception e) {
+          e.printStackTrace();
+      }
   }
 }
