@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -102,8 +103,8 @@ public class MainActivity extends AppCompatActivity {
       case POOR_SIGNAL:
         tvPoorsignal.setText(getFormattedMessage("Poorsignal: %d", signal));
         int psignal=signal.getValue();
-       //data.append("\n"+String.valueOf(signal.getValue()));
-          data.append("\n"+"pp");
+       data.append("\n"+String.valueOf(signal.getValue()));
+
        if(psignal>0) {
              final MediaPlayer mp = MediaPlayer.create(this, R.raw.beep);
         boolean isChecked = ((CheckBox) findViewById(R.id.mutesound)).isChecked();
@@ -115,12 +116,12 @@ public class MainActivity extends AppCompatActivity {
         break;
         case ATTENTION:
         tvAttention.setText(getFormattedMessage("attention: %d", signal));
-            data.append(","+"at");
+            data.append(","+String.valueOf(signal.getValue()));
 
         break;
       case MEDITATION:
         tvMeditation.setText(getFormattedMessage("meditation: %d", signal));
-          data.append(","+"Md");
+          data.append(","+String.valueOf(signal.getValue()));
         break;
       case BLINK:
         tvBlink.setText(getFormattedMessage("blink: %d", signal));
@@ -190,6 +191,13 @@ public class MainActivity extends AppCompatActivity {
       //data.append("\n"+"PoorSignal,LowAlpha,HighAlpha,LowBeta,HighBeta,LowGamma,MidGamma,Delta,Theta");
       try {
       neuroSky.connect();
+          Button btn = (Button) findViewById(R.id.btn_disconnect);
+          Button btn1 = (Button) findViewById(R.id.btn_start_monitoring);
+          Button btn2 = (Button) findViewById(R.id.btn_stop_monitoring);
+          btn.setEnabled(true);
+          btn1.setEnabled(true);
+          btn2.setEnabled(true);
+
     } catch (BluetoothNotEnabledException e) {
       Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
       Log.d(LOG_TAG, e.getMessage());
@@ -198,7 +206,10 @@ public class MainActivity extends AppCompatActivity {
 
   @OnClick(R.id.btn_disconnect) void disconnect() {
     neuroSky.disconnect();
-
+      Button btn1 = (Button) findViewById(R.id.btn_start_monitoring);
+      Button btn2 = (Button) findViewById(R.id.btn_stop_monitoring);
+      btn1.setEnabled(false);
+      btn2.setEnabled(false);
     }
 
 
